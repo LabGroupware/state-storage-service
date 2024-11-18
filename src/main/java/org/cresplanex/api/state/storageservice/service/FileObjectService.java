@@ -62,14 +62,6 @@ public class FileObjectService extends BaseService {
         return jobId;
     }
 
-    public void validateCreatedFileObject(String bucketId, String name, String path)
-            throws AlreadyExistFileObjectPathInBucketException {
-        fileObjectRepository.findByBucketIdAndPath(bucketId, path)
-                .ifPresent(organization -> {
-                    throw new AlreadyExistFileObjectPathInBucketException(bucketId, List.of(path));
-                });
-    }
-
     public FileObjectEntity create(String operatorId, FileObjectEntity object) {
         return fileObjectRepository.save(object);
     }

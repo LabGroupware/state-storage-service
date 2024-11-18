@@ -14,7 +14,7 @@ import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
 import org.cresplanex.api.state.storageservice.event.publisher.FileObjectDomainEventPublisher;
 import org.cresplanex.api.state.storageservice.saga.proxy.StorageServiceProxy;
 import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileObjectSagaState;
-import org.cresplanex.api.state.storageservice.service.FileObjectService;
+import org.cresplanex.api.state.storageservice.service.FileObjectLocalValidateService;
 import org.cresplanex.core.saga.orchestration.SagaDefinition;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +27,10 @@ public class CreateFileObjectSaga extends SagaModel<
 
     private final SagaDefinition<CreateFileObjectSagaState> sagaDefinition;
     private final FileObjectDomainEventPublisher domainEventPublisher;
-    private final FileObjectService fileObjectLocalService;
+    private final FileObjectLocalValidateService fileObjectLocalService;
 
     public CreateFileObjectSaga(
-            FileObjectService fileObjectLocalService,
+            FileObjectLocalValidateService fileObjectLocalService,
             StorageServiceProxy storageService,
             FileObjectDomainEventPublisher domainEventPublisher
     ) {
