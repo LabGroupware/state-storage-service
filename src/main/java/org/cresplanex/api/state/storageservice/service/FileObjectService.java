@@ -7,8 +7,8 @@ import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
 import org.cresplanex.api.state.storageservice.exception.NotFoundFileObjectException;
 import org.cresplanex.api.state.storageservice.exception.FileObjectNotFoundException;
 import org.cresplanex.api.state.storageservice.repository.FileObjectRepository;
-import org.cresplanex.api.state.storageservice.saga.model.userprofile.CreateFileObjectSaga;
-import org.cresplanex.api.state.storageservice.saga.state.userprofile.CreateFileObjectSagaState;
+import org.cresplanex.api.state.storageservice.saga.model.fileobject.CreateFileObjectSaga;
+import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileObjectSagaState;
 import org.cresplanex.core.saga.orchestration.SagaInstanceFactory;
 import org.springframework.stereotype.Service;
 

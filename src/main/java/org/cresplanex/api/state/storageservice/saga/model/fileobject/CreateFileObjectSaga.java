@@ -1,4 +1,4 @@
-package org.cresplanex.api.state.storageservice.saga.model.userprofile;
+package org.cresplanex.api.state.storageservice.saga.model.fileobject;
 
 import org.cresplanex.api.state.common.constants.StorageServiceApplicationCode;
 import org.cresplanex.api.state.common.event.model.storage.FileObjectCreated;
@@ -13,7 +13,7 @@ import org.cresplanex.api.state.common.saga.type.StorageSagaType;
 import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
 import org.cresplanex.api.state.storageservice.event.publisher.FileObjectDomainEventPublisher;
 import org.cresplanex.api.state.storageservice.saga.proxy.StorageServiceProxy;
-import org.cresplanex.api.state.storageservice.saga.state.userprofile.CreateFileObjectSagaState;
+import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileObjectSagaState;
 import org.cresplanex.api.state.storageservice.service.FileObjectService;
 import org.cresplanex.core.saga.orchestration.SagaDefinition;
 import org.springframework.stereotype.Component;

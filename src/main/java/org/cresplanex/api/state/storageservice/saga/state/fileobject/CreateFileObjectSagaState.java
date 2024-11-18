@@ -1,12 +1,11 @@
-package org.cresplanex.api.state.storageservice.saga.state.userprofile;
+package org.cresplanex.api.state.storageservice.saga.state.fileobject;
 
 import lombok.*;
 import org.cresplanex.api.state.common.dto.storage.FileObjectDto;
-import org.cresplanex.api.state.common.dto.userpreference.UserPreferenceDto;
 import org.cresplanex.api.state.common.saga.command.storage.CreateFileObjectCommand;
 import org.cresplanex.api.state.common.saga.state.SagaState;
 import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
-import org.cresplanex.api.state.storageservice.saga.model.userprofile.CreateFileObjectSaga;
+import org.cresplanex.api.state.storageservice.saga.model.fileobject.CreateFileObjectSaga;
 
 @Setter
 @Getter
