@@ -1,7 +1,6 @@
 package org.cresplanex.api.state.storageservice.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cresplanex.api.state.common.saga.local.storage.AlreadyExistFileObjectPathInBucketException;
 import org.cresplanex.api.state.common.service.BaseService;
 import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
 import org.cresplanex.api.state.storageservice.exception.NotFoundFileObjectException;

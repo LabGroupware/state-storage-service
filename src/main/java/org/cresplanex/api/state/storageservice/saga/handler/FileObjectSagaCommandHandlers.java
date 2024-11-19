@@ -103,7 +103,15 @@ public class FileObjectSagaCommandHandlers {
         try {
             FileObjectExistValidateCommand command = cmd.getCommand();
             fileObjectService.validateFileObjects(command.getFileObjectIds());
-            return withSuccess();
+            return withSuccess(
+                    new FileObjectExistValidateReply.Success(
+                            null,
+                            StorageServiceApplicationCode.SUCCESS,
+                            "File object exist validate successfully",
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    ),
+                    FileObjectExistValidateReply.Success.TYPE
+            );
         } catch (NotFoundFileObjectException e) {
             FileObjectExistValidateReply.Failure reply = new FileObjectExistValidateReply.Failure(
                     new FileObjectExistValidateReply.Failure.FileObjectNotFound(e.getFileObjectIds()),
