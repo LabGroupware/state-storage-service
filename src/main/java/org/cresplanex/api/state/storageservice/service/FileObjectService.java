@@ -1,14 +1,21 @@
 package org.cresplanex.api.state.storageservice.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cresplanex.api.state.common.entity.ListEntityWithCount;
+import org.cresplanex.api.state.common.enums.PaginationType;
 import org.cresplanex.api.state.common.service.BaseService;
 import org.cresplanex.api.state.storageservice.entity.FileObjectEntity;
+import org.cresplanex.api.state.storageservice.enums.FileObjectSortType;
 import org.cresplanex.api.state.storageservice.exception.NotFoundFileObjectException;
 import org.cresplanex.api.state.storageservice.exception.FileObjectNotFoundException;
+import org.cresplanex.api.state.storageservice.filter.fileobject.BucketFilter;
 import org.cresplanex.api.state.storageservice.repository.FileObjectRepository;
 import org.cresplanex.api.state.storageservice.saga.model.fileobject.CreateFileObjectSaga;
 import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileObjectSagaState;
+import org.cresplanex.api.state.storageservice.specification.FileObjectSpecifications;
 import org.cresplanex.core.saga.orchestration.SagaInstanceFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -39,8 +46,41 @@ public class FileObjectService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public List<FileObjectEntity> get() {
-        return fileObjectRepository.findAll();
+    public ListEntityWithCount<FileObjectEntity> get(
+            PaginationType paginationType,
+            int limit,
+            int offset,
+            String cursor,
+            FileObjectSortType sortType,
+            boolean withCount,
+            BucketFilter bucketFilter
+    ) {
+        Specification<FileObjectEntity> spec = Specification.where(
+                FileObjectSpecifications.withBucketFilter(bucketFilter));
+
+        List<FileObjectEntity> data = switch (paginationType) {
+            case OFFSET ->
+                    fileObjectRepository.findListWithOffsetPagination(spec, sortType, PageRequest.of(offset / limit, limit));
+            case CURSOR -> fileObjectRepository.findList(spec, sortType); // TODO: Implement cursor pagination
+            default -> fileObjectRepository.findList(spec, sortType);
+        };
+
+        int count = 0;
+        if (withCount){
+            count = fileObjectRepository.countList(spec);
+        }
+        return new ListEntityWithCount<>(
+                data,
+                count
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<FileObjectEntity> getByFileObjectIds(
+            List<String> fileObjectIds,
+            FileObjectSortType sortType
+    ) {
+        return fileObjectRepository.findListByFileObjectIds(fileObjectIds, sortType);
     }
 
     public String beginCreate(String operatorId, FileObjectEntity object) {
