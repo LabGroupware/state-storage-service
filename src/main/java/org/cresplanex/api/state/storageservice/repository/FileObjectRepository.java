@@ -21,27 +21,8 @@ public interface FileObjectRepository extends JpaRepository<FileObjectEntity, St
 
     Optional<FileObjectEntity> findByBucketIdAndPath(String bucketId, String path);
 
-    @Query("SELECT u FROM FileObjectEntity u WHERE u.fileObjectId IN :fileObject ORDER BY " +
-            "CASE WHEN :sortType = 'CREATED_AT_ASC' THEN u.createdAt END ASC, " +
-            "CASE WHEN :sortType = 'CREATED_AT_DESC' THEN u.createdAt END DESC, " +
-            "CASE WHEN :sortType = 'NAME_ASC' THEN u.name END ASC, " +
-            "CASE WHEN :sortType = 'NAME_DESC' THEN u.name END DESC")
-    List<FileObjectEntity> findListByFileObjectIds(List<String> fileObjectIds, FileObjectSortType sortType);
-
-    @Query("SELECT u FROM FileObjectEntity u ORDER BY " +
-            "CASE WHEN :sortType = 'CREATED_AT_ASC' THEN u.createdAt END ASC, " +
-            "CASE WHEN :sortType = 'CREATED_AT_DESC' THEN u.createdAt END DESC, " +
-            "CASE WHEN :sortType = 'NAME_ASC' THEN u.name END ASC, " +
-            "CASE WHEN :sortType = 'NAME_DESC' THEN u.name END DESC")
-    List<FileObjectEntity> findList(Specification<FileObjectEntity> specification, FileObjectSortType sortType);
-
-    @Query("SELECT u FROM FileObjectEntity u ORDER BY " +
-            "CASE WHEN :sortType = 'CREATED_AT_ASC' THEN u.createdAt END ASC, " +
-            "CASE WHEN :sortType = 'CREATED_AT_DESC' THEN u.createdAt END DESC, " +
-            "CASE WHEN :sortType = 'NAME_ASC' THEN u.name END ASC, " +
-            "CASE WHEN :sortType = 'NAME_DESC' THEN u.name END DESC")
-    List<FileObjectEntity> findListWithOffsetPagination(Specification<FileObjectEntity> specification,
-                                                            FileObjectSortType sortType, Pageable pageable);
+    @Query("SELECT u FROM FileObjectEntity u")
+    List<FileObjectEntity> findList(Specification<FileObjectEntity> specification, Pageable pageable);
 
     @Query("SELECT COUNT(u) FROM FileObjectEntity u")
     int countList(Specification<FileObjectEntity> specification);

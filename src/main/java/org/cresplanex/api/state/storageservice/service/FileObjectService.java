@@ -15,6 +15,8 @@ import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileO
 import org.cresplanex.api.state.storageservice.specification.FileObjectSpecifications;
 import org.cresplanex.core.saga.orchestration.SagaInstanceFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +60,15 @@ public class FileObjectService extends BaseService {
         Specification<FileObjectEntity> spec = Specification.where(
                 FileObjectSpecifications.withBucketFilter(bucketFilter));
 
-        List<FileObjectEntity> data = switch (paginationType) {
-            case OFFSET ->
-                    fileObjectRepository.findListWithOffsetPagination(spec, sortType, PageRequest.of(offset / limit, limit));
-            case CURSOR -> fileObjectRepository.findList(spec, sortType); // TODO: Implement cursor pagination
-            default -> fileObjectRepository.findList(spec, sortType);
+        Sort sort = createSort(sortType);
+
+        Pageable pageable = switch (paginationType) {
+            case OFFSET -> PageRequest.of(offset / limit, limit, sort);
+            case CURSOR -> PageRequest.of(0, limit, sort); // TODO: Implement cursor pagination
+            default -> Pageable.unpaged(sort);
         };
+
+        List<FileObjectEntity> data = fileObjectRepository.findList(spec, pageable);
 
         int count = 0;
         if (withCount){
@@ -80,7 +85,9 @@ public class FileObjectService extends BaseService {
             List<String> fileObjectIds,
             FileObjectSortType sortType
     ) {
-        return fileObjectRepository.findListByFileObjectIds(fileObjectIds, sortType);
+        Specification<FileObjectEntity> spec = (root, query, criteriaBuilder) ->
+                root.get("fileObjectId").in(fileObjectIds);
+        return fileObjectRepository.findList(spec, Pageable.unpaged(createSort(sortType)));
     }
 
     public String beginCreate(String operatorId, FileObjectEntity object) {
@@ -120,5 +127,14 @@ public class FileObjectService extends BaseService {
                     .toList();
             throw new NotFoundFileObjectException(notExistFileObjectIds);
         }
+    }
+
+    private Sort createSort(FileObjectSortType sortType) {
+        return switch (sortType) {
+            case CREATED_AT_ASC -> Sort.by(Sort.Order.asc("createdAt"));
+            case CREATED_AT_DESC -> Sort.by(Sort.Order.desc("createdAt"));
+            case NAME_ASC -> Sort.by(Sort.Order.asc("name"), Sort.Order.desc("createdAt"));
+            case NAME_DESC -> Sort.by(Sort.Order.desc("name"), Sort.Order.desc("createdAt"));
+        };
     }
 }
