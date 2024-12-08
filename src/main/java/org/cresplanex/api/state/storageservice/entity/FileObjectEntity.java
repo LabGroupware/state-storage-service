@@ -53,12 +53,12 @@ public class FileObjectEntity extends BaseEntity<FileObjectEntity> {
     @Column(name = "path", length = 200, nullable = false)
     private String path;
 
-    @Column(name = "size", nullable = false)
+    @Column(name = "size")
     private Integer size;
 
-    @Column(name = "mime_type", length = 100, nullable = false)
+    @Column(name = "mime_type", length = 100)
     private String mimeType;
 
-    @Column(name = "chcksum", length = 100, nullable = false)
+    @Column(name = "chcksum", length = 100)
     private String checksum;
 }

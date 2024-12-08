@@ -19,11 +19,7 @@ public interface FileObjectRepository extends JpaRepository<FileObjectEntity, St
 
     List<FileObjectEntity> findAllByBucketIdIn(List<String> bucketIds);
 
+    List<FileObjectEntity> findAllByFileObjectIdIn(List<String> fileObjectIds);
+
     Optional<FileObjectEntity> findByBucketIdAndPath(String bucketId, String path);
-
-    @Query("SELECT u FROM FileObjectEntity u")
-    List<FileObjectEntity> findList(Specification<FileObjectEntity> specification, Pageable pageable);
-
-    @Query("SELECT COUNT(u) FROM FileObjectEntity u")
-    int countList(Specification<FileObjectEntity> specification);
 }

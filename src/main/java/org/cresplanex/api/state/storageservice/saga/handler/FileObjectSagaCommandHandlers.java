@@ -76,6 +76,7 @@ public class FileObjectSagaCommandHandlers {
             return withLock(LockTargetType.STORAGE_OBJECT, fileObject.getFileObjectId())
                     .withSuccess(reply, CreateFileObjectReply.Success.TYPE);
         } catch (Exception e) {
+            log.error("Failed to create file object", e);
             CreateFileObjectReply.Failure reply = new CreateFileObjectReply.Failure(
                     null,
                     StorageServiceApplicationCode.INTERNAL_SERVER_ERROR,

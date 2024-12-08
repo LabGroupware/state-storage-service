@@ -14,6 +14,7 @@ import org.cresplanex.api.state.storageservice.saga.model.fileobject.CreateFileO
 import org.cresplanex.api.state.storageservice.saga.state.fileobject.CreateFileObjectSagaState;
 import org.cresplanex.api.state.storageservice.specification.FileObjectSpecifications;
 import org.cresplanex.core.saga.orchestration.SagaInstanceFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -68,14 +69,14 @@ public class FileObjectService extends BaseService {
             default -> Pageable.unpaged(sort);
         };
 
-        List<FileObjectEntity> data = fileObjectRepository.findList(spec, pageable);
+        Page<FileObjectEntity> data = fileObjectRepository.findAll(spec, pageable);
 
         int count = 0;
         if (withCount){
-            count = fileObjectRepository.countList(spec);
+            count = (int) data.getTotalElements();
         }
         return new ListEntityWithCount<>(
-                data,
+                data.getContent(),
                 count
         );
     }
@@ -85,9 +86,10 @@ public class FileObjectService extends BaseService {
             List<String> fileObjectIds,
             FileObjectSortType sortType
     ) {
-        Specification<FileObjectEntity> spec = (root, query, criteriaBuilder) ->
-                root.get("fileObjectId").in(fileObjectIds);
-        return fileObjectRepository.findList(spec, Pageable.unpaged(createSort(sortType)));
+        Specification<FileObjectEntity> spec = Specification.where(
+                FileObjectSpecifications.whereFileObjectIds(fileObjectIds)
+        );
+        return fileObjectRepository.findAll(spec, createSort(sortType));
     }
 
     public String beginCreate(String operatorId, FileObjectEntity object) {
@@ -117,7 +119,7 @@ public class FileObjectService extends BaseService {
     }
 
     public void validateFileObjects(List<String> fileObjectIds) {
-        List<String> existFileObjectIds = fileObjectRepository.findAllByBucketIdIn(fileObjectIds)
+        List<String> existFileObjectIds = fileObjectRepository.findAllByFileObjectIdIn(fileObjectIds)
                 .stream()
                 .map(FileObjectEntity::getFileObjectId)
                 .toList();
