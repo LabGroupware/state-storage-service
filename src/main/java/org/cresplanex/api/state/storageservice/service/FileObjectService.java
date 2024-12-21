@@ -92,6 +92,7 @@ public class FileObjectService extends BaseService {
         return fileObjectRepository.findAll(spec, createSort(sortType));
     }
 
+    @Transactional
     public String beginCreate(String operatorId, FileObjectEntity object) {
         CreateFileObjectSagaState.InitialData initialData = CreateFileObjectSagaState.InitialData.builder()
                 .bucketId(object.getBucketId())
