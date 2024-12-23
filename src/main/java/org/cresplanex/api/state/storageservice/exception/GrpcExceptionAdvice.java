@@ -2,9 +2,11 @@ package org.cresplanex.api.state.storageservice.exception;
 
 import build.buf.gen.storage.v1.*;
 import io.grpc.Status;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.advice.GrpcAdvice;
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
 
+@Slf4j
 @GrpcAdvice
 public class GrpcExceptionAdvice {
 
@@ -55,11 +57,15 @@ public class GrpcExceptionAdvice {
 
     @GrpcExceptionHandler
     public Status handleInternal(Throwable e) {
+        log.error("Internal error", e);
+
+        String message = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
+
          StorageServiceInternalError.Builder descriptionBuilder =
                  StorageServiceInternalError.newBuilder()
                          .setMeta(StorageServiceErrorMeta.newBuilder()
                                  .setCode(StorageServiceErrorCode.STORAGE_SERVICE_ERROR_CODE_INTERNAL)
-                                 .setMessage(e.getMessage())
+                                 .setMessage(message)
                                  .build());
 
          return Status.INTERNAL
